@@ -4,21 +4,17 @@ const addressEl = document.getElementById("address");
 const networkEl = document.getElementById("network");
 const balanceEl = document.getElementById("balance");
 
-// Avalanche Fuji Testnet chainId (hex)
 const AVALANCHE_FUJI_CHAIN_ID = "0xa869";
 
-// Shorten wallet address
 function shortenAddress(address) {
   return address.slice(0, 6) + "..." + address.slice(-4);
 }
 
-// Format AVAX balance
 function formatAvaxBalance(balanceWei) {
   const balance = parseInt(balanceWei, 16);
   return (balance / 1e18).toFixed(4);
 }
 
-// Show error to UI
 function showError(message) {
   statusEl.textContent = message;
   statusEl.style.color = "#e84118";
@@ -34,7 +30,6 @@ async function connectWallet() {
     statusEl.textContent = "Connecting...";
     statusEl.style.color = "#fbc531";
 
-    // Request account
     const accounts = await window.ethereum.request({
       method: "eth_requestAccounts",
     });
@@ -42,7 +37,6 @@ async function connectWallet() {
     const address = accounts[0];
     addressEl.textContent = shortenAddress(address);
 
-    // Get chainId
     const chainId = await window.ethereum.request({
       method: "eth_chainId",
     });
@@ -58,13 +52,11 @@ async function connectWallet() {
     statusEl.textContent = "Connected ✅";
     statusEl.style.color = "#4cd137";
 
-    // Disable connect button
     connectBtn.disabled = true;
     connectBtn.textContent = "Connected";
     connectBtn.style.opacity = "0.6";
     connectBtn.style.cursor = "not-allowed";
 
-    // Get balance
     const balanceWei = await window.ethereum.request({
       method: "eth_getBalance",
       params: [address, "latest"],
@@ -78,12 +70,10 @@ async function connectWallet() {
   }
 }
 
-
-// Account changed
 if (window.ethereum) {
   window.ethereum.on("accountsChanged", (accounts) => {
     if (accounts.length === 0) {
-      // Wallet disconnected
+      
       addressEl.textContent = "-";
       balanceEl.textContent = "-";
       networkEl.textContent = "-";
@@ -99,11 +89,11 @@ if (window.ethereum) {
     }
   });
 
-  // Network changed
   window.ethereum.on("chainChanged", () => {
-    // Reload page agar state fresh
+  
     window.location.reload();
   });
 }
 
 connectBtn.addEventListener("click", connectWallet);
+
