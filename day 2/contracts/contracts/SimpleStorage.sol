@@ -1,5 +1,4 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.27;
+pragma solidity ^0.8.20;
 
 contract SimpleStorage {
     address public owner;
@@ -40,3 +39,4 @@ contract SimpleStorage {
         return message;
     }
 }
+
