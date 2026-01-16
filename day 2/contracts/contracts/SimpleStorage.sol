@@ -1,0 +1,42 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.27;
+
+contract SimpleStorage {
+    address public owner;
+
+    event OwnerSet(address indexed oldOwner, address indexed newOwner);
+    event ValueUpdated(uint256 newValue);
+    event MessageUpdated(string newMessage);
+
+    uint256 private storedValue;
+    string private message;
+
+    constructor() {
+        address oldOwner = owner;
+        owner = msg.sender;
+        emit OwnerSet(oldOwner, owner);
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not owner");
+        _;
+    }
+
+    function setValue(uint256 _value) public onlyOwner {
+        storedValue = _value;
+        emit ValueUpdated(_value);
+    }
+
+    function setMessage(string calldata _message) public onlyOwner {
+        message = _message;
+        emit MessageUpdated(_message);
+    }
+
+    function getValue() public view returns (uint256) {
+        return storedValue;
+    }
+
+    function getMessage() public view returns (string memory) {
+        return message;
+    }
+}
