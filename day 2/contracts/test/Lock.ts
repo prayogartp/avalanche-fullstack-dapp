@@ -7,16 +7,12 @@ import hre from "hardhat";
 import { getAddress, parseGwei } from "viem";
 
 describe("Lock", function () {
-  // We define a fixture to reuse the same setup in every test.
-  // We use loadFixture to run this setup once, snapshot that state,
-  // and reset Hardhat Network to that snapshot in every test.
   async function deployOneYearLockFixture() {
     const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
 
     const lockedAmount = parseGwei("1");
     const unlockTime = BigInt((await time.latest()) + ONE_YEAR_IN_SECS);
 
-    // Contracts are deployed using the first signer/account by default
     const [owner, otherAccount] = await hre.viem.getWalletClients();
 
     const lock = await hre.viem.deployContract("Lock", [unlockTime], {
@@ -63,7 +59,7 @@ describe("Lock", function () {
     });
 
     it("Should fail if the unlockTime is not in the future", async function () {
-      // We don't use the fixture here because we want a different deployment
+    
       const latestTime = BigInt(await time.latest());
       await expect(
         hre.viem.deployContract("Lock", [latestTime], {
@@ -88,10 +84,8 @@ describe("Lock", function () {
           deployOneYearLockFixture,
         );
 
-        // We can increase the time in Hardhat Network
         await time.increaseTo(unlockTime);
 
-        // We retrieve the contract with a different account to send a transaction
         const lockAsOtherAccount = await hre.viem.getContractAt(
           "Lock",
           lock.address,
@@ -107,7 +101,6 @@ describe("Lock", function () {
           deployOneYearLockFixture,
         );
 
-        // Transactions are sent using the first signer by default
         await time.increaseTo(unlockTime);
 
         await expect(lock.write.withdraw()).to.be.fulfilled;
@@ -124,7 +117,6 @@ describe("Lock", function () {
         const hash = await lock.write.withdraw();
         await publicClient.waitForTransactionReceipt({ hash });
 
-        // get the withdrawal events in the latest block
         const withdrawalEvents = await lock.getEvents.Withdrawal();
         expect(withdrawalEvents).to.have.lengthOf(1);
         expect(withdrawalEvents[0].args.amount).to.equal(lockedAmount);
