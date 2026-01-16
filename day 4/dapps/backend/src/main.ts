@@ -7,7 +7,9 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle("Simple Storage dApp API")
-    .setDescription("Backend Web3 API")
+    .setDescription(
+      "Backend Web3 API\n- Nama: Prayoga Rizky Triputra\n- NIM: 231011400410"
+    )
     .setVersion("1.0")
     .addTag("simple-storage")
     .build();
